@@ -1,4 +1,4 @@
-import express from 'express'
+import express, { NextFunction, Request, Response } from 'express'
 import 'dotenv/config'
 
 import usersRouter from './routes/users.routes'
@@ -9,6 +9,9 @@ const port = 3000
 
 app.use(express.json())
 app.use('/users', usersRouter)
+app.use((err: any, req: Request, res: Response, next: NextFunction) => {
+  res.status(500).send(err.message)
+})
 
 databaseService.connect()
 app.listen(port, () => {
