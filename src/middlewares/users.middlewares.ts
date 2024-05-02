@@ -23,7 +23,7 @@ export const loginValidator = validate(
           })
 
           if (!user) {
-            throw new Error(USERS_MESSAGES.USER_NOT_FOUND)
+            throw new Error(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
           }
 
           req.user = user

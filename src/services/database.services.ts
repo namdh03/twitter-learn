@@ -1,4 +1,5 @@
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
+import RefreshToken from '~/models/schemas/RefreshToke.schema'
 import User from '~/models/schemas/User.schema'
 
 const uri = `mongodb+srv://${process.env.DB_USERNAME}:${process.env.DB_PASSWORD}@twitter-singapore.mycwwx9.mongodb.net/?retryWrites=true&w=majority&appName=twitter-singapore`
@@ -33,6 +34,10 @@ class DatabaseService {
 
   get users(): Collection<User> {
     return this.db.collection(process.env.DB_COLLECTION_USERS as string)
+  }
+
+  get refreshTokens(): Collection<RefreshToken> {
+    return this.db.collection(process.env.DB_COLLECTION_REFRESH_TOKENS as string)
   }
 }
 
