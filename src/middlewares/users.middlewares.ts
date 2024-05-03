@@ -1,3 +1,4 @@
+import { Request } from 'express'
 import { checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
@@ -32,7 +33,7 @@ export const loginValidator = validate(
               throw new Error(USERS_MESSAGES.EMAIL_OR_PASSWORD_IS_INCORRECT)
             }
 
-            req.user = user
+            ;(req as Request).user = user
 
             return true
           }
@@ -195,7 +196,7 @@ export const accessTokenValidator = validate(
 
             try {
               const decode_authorization = await verifyToken({ token: accessToken })
-              req.decode_authorization = decode_authorization
+              ;(req as Request).decode_authorization = decode_authorization
             } catch (error) {
               if (error instanceof JsonWebTokenError) {
                 throw new ErrorWithStatus({
