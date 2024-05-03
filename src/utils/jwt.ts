@@ -22,7 +22,7 @@ export const signToken = ({
   })
 }
 
-export const verifyAccessToken = ({
+export const verifyToken = ({
   token,
   secretOrPublicKey = process.env.JWT_SECRET as string
 }: {
