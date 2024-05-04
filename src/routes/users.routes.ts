@@ -4,6 +4,7 @@ import {
   forgotPasswordController,
   loginController,
   logoutController,
+  meController,
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
@@ -105,7 +106,7 @@ usersRouter.post(
 )
 
 /**
- * Description.
+ * Description. Reset password when user click on the button reset password
  * Path: /reset-password
  * Method: POST
  * Body: {
@@ -115,5 +116,15 @@ usersRouter.post(
  * }
  */
 usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(resetPasswordController))
+
+/**
+ * Description. Get user information
+ * Path: /me
+ * Method: GET
+ * HEADER: {
+ *    Authorization: Bearer {access_token}
+ * }
+ */
+usersRouter.get('/me', accessTokenValidator, meController)
 
 export default usersRouter

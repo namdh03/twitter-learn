@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { Request, Response } from 'express'
 import { ParamsDictionary } from 'express-serve-static-core'
 import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
@@ -15,7 +15,6 @@ import {
   VerifyForgotPasswordReqBody
 } from '~/models/requests/User.requests'
 import User from '~/models/schemas/User.schema'
-import databaseService from '~/services/database.services'
 import usersService from '~/services/users.services'
 
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
@@ -47,9 +46,7 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
 
 export const emailVerifyController = async (req: Request<ParamsDictionary, any, VerifyEmailReqBody>, res: Response) => {
   const { user_id } = req.decode_email_verify_token as TokenPayload
-  const user = await databaseService.users.findOne({
-    _id: new ObjectId(user_id)
-  })
+  const user = await usersService.getMe(user_id)
 
   if (!user) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -73,9 +70,7 @@ export const emailVerifyController = async (req: Request<ParamsDictionary, any, 
 
 export const resendVerifyEmailController = async (req: Request, res: Response) => {
   const { user_id } = req.decode_authorization as TokenPayload
-  const user = await databaseService.users.findOne({
-    _id: new ObjectId(user_id)
-  })
+  const user = await usersService.getMe(user_id)
 
   if (!user) {
     return res.status(HTTP_STATUS.NOT_FOUND).json({
@@ -125,4 +120,14 @@ export const resetPasswordController = async (
   const result = await usersService.resetPassword(user_id, password)
 
   return res.status(HTTP_STATUS.OK).json(result)
+}
+
+export const meController = async (req: Request, res: Response) => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const user = await usersService.getMe(user_id)
+
+  return res.status(HTTP_STATUS.OK).json({
+    message: USERS_MESSAGES.GET_USER_INFO_SUCCESS,
+    data: user
+  })
 }
