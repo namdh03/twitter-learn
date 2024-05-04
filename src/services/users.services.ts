@@ -73,7 +73,7 @@ class UsersService {
       })
     )
 
-    console.log('email_verify_token', email_verify_token)
+    console.log('email_verify_token at register', email_verify_token)
 
     return {
       accessToken,
@@ -134,12 +134,34 @@ class UsersService {
         ]
       )
     ])
-    console.log(token)
     const [accessToken, refreshToken] = token
 
     return {
       accessToken,
       refreshToken
+    }
+  }
+
+  async resendEmailVerify(user_id: string) {
+    const email_verify_token = await this.signEmailVerifyToken(user_id.toString())
+    await databaseService.users.updateOne(
+      {
+        _id: new ObjectId(user_id)
+      },
+      {
+        $set: {
+          email_verify_token
+        },
+        $currentDate: {
+          updated_at: true
+        }
+      }
+    )
+
+    console.log('email_verify_token at resendEmailVerify', email_verify_token)
+
+    return {
+      message: USERS_MESSAGES.RESEND_EMAIL_VERIFY_SUCCESS
     }
   }
 }
