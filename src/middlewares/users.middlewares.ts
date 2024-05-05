@@ -170,6 +170,32 @@ const forgotPasswordToken: ParamSchema = {
   }
 }
 
+const userIdSchema: ParamSchema = {
+  custom: {
+    options: async (value: string, { req }) => {
+      if (!ObjectId.isValid(value)) {
+        throw new ErrorWithStatus({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: USERS_MESSAGES.INVALID_USER_ID
+        })
+      }
+
+      const followed_user = await databaseService.users.findOne({
+        _id: new ObjectId(value)
+      })
+
+      if (!followed_user) {
+        throw new ErrorWithStatus({
+          status: HTTP_STATUS.NOT_FOUND,
+          message: USERS_MESSAGES.USER_NOT_FOUND
+        })
+      }
+
+      return true
+    }
+  }
+}
+
 export const loginValidator = validate(
   checkSchema(
     {
@@ -506,32 +532,17 @@ export const updateMeValidator = validate(
 export const followValidator = validate(
   checkSchema(
     {
-      followed_user_id: {
-        custom: {
-          options: async (value: string, { req }) => {
-            if (!ObjectId.isValid(value)) {
-              throw new ErrorWithStatus({
-                status: HTTP_STATUS.NOT_FOUND,
-                message: USERS_MESSAGES.INVALID_FOLLOWED_USER_ID
-              })
-            }
-
-            const followed_user = await databaseService.users.findOne({
-              _id: new ObjectId(value)
-            })
-
-            if (!followed_user) {
-              throw new ErrorWithStatus({
-                status: HTTP_STATUS.NOT_FOUND,
-                message: USERS_MESSAGES.USER_NOT_FOUND
-              })
-            }
-
-            return true
-          }
-        }
-      }
+      followed_user_id: userIdSchema
     },
     ['body']
+  )
+)
+
+export const unFollowValidator = validate(
+  checkSchema(
+    {
+      user_id: userIdSchema
+    },
+    ['params']
   )
 )
