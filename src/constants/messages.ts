@@ -50,5 +50,8 @@ export const USERS_MESSAGES = {
   USERNAME_LENGTH_MUST_BE_BETWEEN_1_AND_50: 'Username length must be between 1 and 50',
   IMAGE_MUST_BE_A_STRING: 'Image must be a string',
   IMAGE_LENGTH_MUST_BE_BETWEEN_1_AND_400: 'Image length must be between 1 and 400',
-  GET_PROFILE_SUCCESS: 'Get profile successful'
+  GET_PROFILE_SUCCESS: 'Get profile successful',
+  FOLLOW_USER_SUCCESS: 'Follow user successful',
+  INVALID_FOLLOWED_USER_ID: 'Invalid followed user id',
+  USER_ALREADY_FOLLOWED: 'User already followed'
 } as const

@@ -1,4 +1,5 @@
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
+import Follower from '~/models/schemas/Follower.schema'
 import RefreshToken from '~/models/schemas/RefreshToke.schema'
 import User from '~/models/schemas/User.schema'
 
@@ -38,6 +39,10 @@ class DatabaseService {
 
   get refreshTokens(): Collection<RefreshToken> {
     return this.db.collection(process.env.DB_COLLECTION_REFRESH_TOKENS as string)
+  }
+
+  get followers(): Collection<Follower> {
+    return this.db.collection(process.env.DB_COLLECTION_FOLLOWERS as string)
   }
 }
 

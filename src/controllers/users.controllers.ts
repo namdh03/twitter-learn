@@ -6,6 +6,7 @@ import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
+  FollowReqBody,
   ForgotPasswordReqBody,
   GetProfileReqParams,
   LoginReqBody,
@@ -158,4 +159,12 @@ export const getProfileController = async (req: Request<GetProfileReqParams>, re
     message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     data: user
   })
+}
+
+export const followController = async (req: Request<ParamsDictionary, any, FollowReqBody>, res: Response) => {
+  const { followed_user_id } = req.body
+  const { user_id } = req.decode_authorization as TokenPayload
+  const result = await usersService.follow(user_id, followed_user_id)
+
+  return res.status(HTTP_STATUS.OK).json(result)
 }
