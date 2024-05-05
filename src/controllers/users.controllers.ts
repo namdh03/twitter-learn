@@ -11,6 +11,7 @@ import {
   RegisterReqBody,
   ResetPasswordReqBody,
   TokenPayload,
+  UpdateMeReqBody,
   VerifyEmailReqBody,
   VerifyForgotPasswordReqBody
 } from '~/models/requests/User.requests'
@@ -18,9 +19,11 @@ import User from '~/models/schemas/User.schema'
 import usersService from '~/services/users.services'
 
 export const loginController = async (req: Request<ParamsDictionary, any, LoginReqBody>, res: Response) => {
-  const user = req.user as User
-  const user_id = user._id as ObjectId
-  const result = await usersService.login(user_id.toString())
+  const { _id, verify } = req.user as User
+  const result = await usersService.login({
+    user_id: (_id as ObjectId).toString(),
+    verify
+  })
 
   return res.status(HTTP_STATUS.OK).json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,
@@ -54,7 +57,7 @@ export const emailVerifyController = async (req: Request<ParamsDictionary, any, 
     })
   }
 
-  if (user.email_verify_token === '') {
+  if (user.verify === UserVerifyStatus.Verified) {
     return res.status(HTTP_STATUS.OK).json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED
     })
@@ -93,8 +96,11 @@ export const forgotPasswordController = async (
   req: Request<ParamsDictionary, any, ForgotPasswordReqBody>,
   res: Response
 ) => {
-  const { _id } = req.user as User
-  const result = await usersService.forgotPassword((_id as ObjectId).toString())
+  const { _id, verify } = req.user as User
+  const result = await usersService.forgotPassword({
+    user_id: (_id as ObjectId).toString(),
+    verify
+  })
 
   return res.status(HTTP_STATUS.OK).json(result)
 }
@@ -128,6 +134,16 @@ export const meController = async (req: Request, res: Response) => {
 
   return res.status(HTTP_STATUS.OK).json({
     message: USERS_MESSAGES.GET_USER_INFO_SUCCESS,
+    data: user
+  })
+}
+
+export const updateMeController = async (req: Request<ParamsDictionary, any, UpdateMeReqBody>, res: Response) => {
+  const { user_id } = req.decode_authorization as TokenPayload
+  const { body } = req
+  const user = await usersService.updateMe(user_id, body)
+  return res.status(HTTP_STATUS.OK).json({
+    message: USERS_MESSAGES.UPDATE_USER_INFO_SUCCESS,
     data: user
   })
 }
