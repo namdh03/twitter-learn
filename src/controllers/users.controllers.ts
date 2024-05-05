@@ -7,6 +7,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   ForgotPasswordReqBody,
+  GetProfileReqParams,
   LoginReqBody,
   LogoutReqBody,
   RegisterReqBody,
@@ -145,6 +146,16 @@ export const updateMeController = async (req: Request<ParamsDictionary, any, Upd
   const user = await usersService.updateMe(user_id, body)
   return res.status(HTTP_STATUS.OK).json({
     message: USERS_MESSAGES.UPDATE_USER_INFO_SUCCESS,
+    data: user
+  })
+}
+
+export const getProfileController = async (req: Request<GetProfileReqParams>, res: Response) => {
+  const { username } = req.params
+  const user = await usersService.getProfile(username)
+
+  return res.status(HTTP_STATUS.OK).json({
+    message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     data: user
   })
 }

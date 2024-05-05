@@ -2,6 +2,7 @@ import { Router } from 'express'
 import {
   emailVerifyController,
   forgotPasswordController,
+  getProfileController,
   loginController,
   logoutController,
   meController,
@@ -64,7 +65,7 @@ usersRouter.post('/register', registerValidator, wrapRequestHandler(registerCont
  *    refresh_token: string
  * }
  */
-usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, logoutController)
+usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
 
 /**
  * Description. Verify email when use click on the link in gmail
@@ -130,7 +131,7 @@ usersRouter.post('/reset-password', resetPasswordValidator, wrapRequestHandler(r
  *    Authorization: Bearer {access_token}
  * }
  */
-usersRouter.get('/me', accessTokenValidator, meController)
+usersRouter.get('/me', accessTokenValidator, wrapRequestHandler(meController))
 
 /**
  * Description. Update user information
@@ -157,5 +158,12 @@ usersRouter.patch(
   ]),
   wrapRequestHandler(updateMeController)
 )
+
+/**
+ * Description. Get user information by username
+ * Path: /:username
+ * Method: GET
+ */
+usersRouter.get('/:username', wrapRequestHandler(getProfileController))
 
 export default usersRouter
