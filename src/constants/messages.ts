@@ -47,7 +47,9 @@ export const USERS_MESSAGES = {
   WEBSITE_MUST_BE_A_STRING: 'Website must be a string',
   WEBSITE_LENGTH_MUST_BE_BETWEEN_1_AND_200: 'Website length must be between 1 and 200',
   USERNAME_MUST_BE_A_STRING: 'Username must be a string',
-  USERNAME_LENGTH_MUST_BE_BETWEEN_1_AND_50: 'Username length must be between 1 and 50',
+  USERNAME_INVALID:
+    'Username must be 4-15 characters long and contain only letters, numbers, underscores, not only numbers',
+  USERNAME_EXISTED: 'Username existed',
   IMAGE_MUST_BE_A_STRING: 'Image must be a string',
   IMAGE_LENGTH_MUST_BE_BETWEEN_1_AND_400: 'Image length must be between 1 and 400',
   GET_PROFILE_SUCCESS: 'Get profile successful',
