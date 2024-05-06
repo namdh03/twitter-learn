@@ -555,3 +555,38 @@ export const unFollowValidator = validate(
     ['params']
   )
 )
+
+export const changePasswordValidator = validate(
+  checkSchema({
+    old_password: {
+      ...passwordSchema,
+      custom: {
+        options: async (value, { req }) => {
+          const { user_id } = (req as Request).decode_authorization as TokenPayload
+
+          const user = await databaseService.users.findOne({
+            _id: new ObjectId(user_id)
+          })
+
+          if (!user) {
+            throw new ErrorWithStatus({
+              status: HTTP_STATUS.UNAUTHORIZED,
+              message: USERS_MESSAGES.USER_NOT_FOUND
+            })
+          }
+
+          if (user.password !== hashPassword(value)) {
+            throw new ErrorWithStatus({
+              status: HTTP_STATUS.UNAUTHORIZED,
+              message: USERS_MESSAGES.OLD_PASSWORD_NOT_MATCH
+            })
+          }
+
+          return true
+        }
+      }
+    },
+    password: passwordSchema,
+    confirm_password: confirmPasswordSchema
+  })
+)
