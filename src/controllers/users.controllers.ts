@@ -4,7 +4,6 @@ import { ObjectId } from 'mongodb'
 import { UserVerifyStatus } from '~/constants/enums'
 import HTTP_STATUS from '~/constants/httpStatus'
 import { USERS_MESSAGES } from '~/constants/messages'
-import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   ChangePasswordReqBody,
   FollowReqBody,
@@ -30,7 +29,7 @@ export const loginController = async (req: Request<ParamsDictionary, any, LoginR
     verify
   })
 
-  return res.status(HTTP_STATUS.OK).json({
+  return res.json({
     message: USERS_MESSAGES.LOGIN_SUCCESS,
     data: result
   })
@@ -57,7 +56,7 @@ export const logoutController = async (req: Request<ParamsDictionary, any, Logou
   const { refresh_token } = req.body
   const result = await usersService.logout(refresh_token)
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
 
 export const emailVerifyController = async (req: Request<ParamsDictionary, any, VerifyEmailReqBody>, res: Response) => {
@@ -71,14 +70,14 @@ export const emailVerifyController = async (req: Request<ParamsDictionary, any, 
   }
 
   if (user.verify === UserVerifyStatus.Verified) {
-    return res.status(HTTP_STATUS.OK).json({
+    return res.json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED
     })
   }
 
   const result = await usersService.verifyEmail(user_id)
 
-  return res.status(HTTP_STATUS.OK).json({
+  return res.json({
     message: USERS_MESSAGES.EMAIL_VERIFY_SUCCESS,
     data: result
   })
@@ -95,14 +94,14 @@ export const resendVerifyEmailController = async (req: Request, res: Response) =
   }
 
   if (user.verify === UserVerifyStatus.Verified) {
-    return res.status(HTTP_STATUS.OK).json({
+    return res.json({
       message: USERS_MESSAGES.EMAIL_ALREADY_VERIFIED
     })
   }
 
   const result = await usersService.resendEmailVerify(user_id)
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
 
 export const forgotPasswordController = async (
@@ -115,14 +114,14 @@ export const forgotPasswordController = async (
     verify
   })
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
 
 export const verifyForgotPasswordController = async (
   req: Request<ParamsDictionary, any, VerifyForgotPasswordReqBody>,
   res: Response
 ) => {
-  return res.status(HTTP_STATUS.OK).json({
+  return res.json({
     message: USERS_MESSAGES.VERIFY_FORGOT_PASSWORD_SUCCESS
   })
 }
@@ -138,14 +137,14 @@ export const resetPasswordController = async (
 
   const result = await usersService.resetPassword(user_id, password)
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
 
 export const meController = async (req: Request, res: Response) => {
   const { user_id } = req.decode_authorization as TokenPayload
   const user = await usersService.getMe(user_id)
 
-  return res.status(HTTP_STATUS.OK).json({
+  return res.json({
     message: USERS_MESSAGES.GET_USER_INFO_SUCCESS,
     data: user
   })
@@ -155,7 +154,7 @@ export const updateMeController = async (req: Request<ParamsDictionary, any, Upd
   const { user_id } = req.decode_authorization as TokenPayload
   const { body } = req
   const user = await usersService.updateMe(user_id, body)
-  return res.status(HTTP_STATUS.OK).json({
+  return res.json({
     message: USERS_MESSAGES.UPDATE_USER_INFO_SUCCESS,
     data: user
   })
@@ -165,7 +164,7 @@ export const getProfileController = async (req: Request<GetProfileReqParams>, re
   const { username } = req.params
   const user = await usersService.getProfile(username)
 
-  return res.status(HTTP_STATUS.OK).json({
+  return res.json({
     message: USERS_MESSAGES.GET_PROFILE_SUCCESS,
     data: user
   })
@@ -176,7 +175,7 @@ export const followController = async (req: Request<ParamsDictionary, any, Follo
   const { user_id } = req.decode_authorization as TokenPayload
   const result = await usersService.follow(user_id, followed_user_id)
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
 
 export const unFollowController = async (req: Request<UnFollowReqParams>, res: Response) => {
@@ -184,7 +183,7 @@ export const unFollowController = async (req: Request<UnFollowReqParams>, res: R
   const { user_id: followed_user_id } = req.params
   const result = await usersService.unFollow(user_id, followed_user_id)
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
 
 export const changePasswordController = async (
@@ -195,5 +194,5 @@ export const changePasswordController = async (
   const { password } = req.body
   const result = await usersService.changePassword(user_id, password)
 
-  return res.status(HTTP_STATUS.OK).json(result)
+  return res.json(result)
 }
