@@ -8,7 +8,7 @@ import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 
 const app = express()
-const port = 4000
+const port = process.env.PORT || 4000
 
 databaseService.connect()
 
