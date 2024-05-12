@@ -4,20 +4,31 @@ import path from 'path'
 import sharp from 'sharp'
 import { isProduction } from '~/constants/configs'
 import { UPLOAD_DIR } from '~/constants/dir'
-import { getFileName, handleUploadSingleImage } from '~/utils/file'
+import { MediaType } from '~/constants/enums'
+import { Media } from '~/models/Other'
+import { getFileName, handleUploadImage } from '~/utils/file'
 
 class MediasService {
-  async handleUploadSingleImage(req: Request) {
-    const file = await handleUploadSingleImage(req)
-    const newName = getFileName(file.newFilename)
-    const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`)
+  async uploadImage(req: Request) {
+    const files = await handleUploadImage(req)
+    const result: Media[] = await Promise.all(
+      files.map(async (file) => {
+        const newName = getFileName(file.newFilename)
+        const newPath = path.resolve(UPLOAD_DIR, `${newName}.jpg`)
 
-    await sharp(file.filepath).jpeg().toFile(newPath)
-    fs.unlinkSync(file.filepath)
+        await sharp(file.filepath).jpeg().toFile(newPath)
+        fs.unlinkSync(file.filepath)
 
-    return isProduction
-      ? `${process.env.HOST}/static/${newName}.jpg`
-      : `http://localhost:${process.env.PORT}/static/${newName}.jpg`
+        return {
+          url: isProduction
+            ? `${process.env.HOST}/static/${newName}.jpg`
+            : `http://localhost:${process.env.PORT}/static/${newName}.jpg`,
+          type: MediaType.Image
+        }
+      })
+    )
+
+    return result
   }
 }
 
