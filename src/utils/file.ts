@@ -1,7 +1,6 @@
 import { Request } from 'express'
 import { File } from 'formidable'
 import fs from 'fs'
-import path from 'path'
 import { UPLOAD_IMAGE_TEMP_DIR, UPLOAD_VIDEO_DIR, UPLOAD_VIDEO_TEMP_DIR } from '~/constants/dir'
 
 export const initFolder = () => {
@@ -55,7 +54,13 @@ export const handleUploadVideo = async (req: Request) => {
     maxFiles: 1,
     maxFileSize: 50 * 1024 * 1024, // 50MB
     filter: ({ name, mimetype }) => {
-      return true
+      const valid = name === 'video' && Boolean(mimetype?.includes('mp4') || mimetype?.includes('quicktime'))
+
+      if (!valid) {
+        form.emit('error' as any, new Error('File type is not valid') as any)
+      }
+
+      return valid
     }
   })
 
