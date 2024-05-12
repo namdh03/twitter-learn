@@ -9,6 +9,7 @@ import {
   logoutController,
   meController,
   oauthController,
+  refreshTokenController,
   registerController,
   resendVerifyEmailController,
   resetPasswordController,
@@ -80,6 +81,16 @@ usersRouter.post('/register', registerValidator, wrapRequestHandler(registerCont
  * }
  */
 usersRouter.post('/logout', accessTokenValidator, refreshTokenValidator, wrapRequestHandler(logoutController))
+
+/**
+ * Description. Refresh token when access token is expired
+ * Path: /refresh-token
+ * Method: POST
+ * Body: {
+ *    refresh_token: string
+ * }
+ */
+usersRouter.post('/refresh-token', refreshTokenValidator, wrapRequestHandler(refreshTokenController))
 
 /**
  * Description. Verify email when use click on the link in gmail
