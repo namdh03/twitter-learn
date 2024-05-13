@@ -7,6 +7,7 @@ import { UPLOAD_IMAGE_DIR } from '~/constants/dir'
 import { MediaType } from '~/constants/enums'
 import { Media } from '~/models/Other'
 import { getFileName, handleUploadImage, handleUploadVideo } from '~/utils/file'
+import { encodeHLSWithMultipleVideoStreams } from '~/utils/video'
 
 class MediasService {
   async uploadImage(req: Request) {
@@ -39,6 +40,26 @@ class MediasService {
         : `http://localhost:${process.env.PORT}/static/video/${file.newFilename}`,
       type: MediaType.Video
     }))
+
+    return result
+  }
+
+  async uploadVideoHLS(req: Request) {
+    const files = await handleUploadVideo(req)
+    const result: Media[] = await Promise.all(
+      files.map(async (file) => {
+        const newName = getFileName(file.newFilename)
+        await encodeHLSWithMultipleVideoStreams(file.filepath)
+        fs.unlinkSync(file.filepath)
+
+        return {
+          url: isProduction
+            ? `${process.env.HOST}/static/video-hls/${newName}`
+            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}`,
+          type: MediaType.HLS
+        }
+      })
+    )
 
     return result
   }
