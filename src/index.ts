@@ -1,4 +1,5 @@
 import express from 'express'
+import cors from 'cors'
 import 'dotenv/config'
 
 import databaseService from './services/database.services'
@@ -17,6 +18,7 @@ databaseService.connect()
 initFolder()
 
 app.use(express.json())
+app.use(cors())
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/static', staticRouter)

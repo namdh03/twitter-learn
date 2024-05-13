@@ -17,7 +17,7 @@ export const serveImageController = (req: Request, res: Response) => {
   })
 }
 
-export const serveVideoController = async (req: Request, res: Response) => {
+export const serveVideoStreamController = async (req: Request, res: Response) => {
   const mime = (await import('mime')).default
   const range = req.headers.range
 
@@ -65,6 +65,30 @@ export const serveVideoController = async (req: Request, res: Response) => {
   res.writeHead(HTTP_STATUS.PARTIAL_CONTENT, headers)
   const videoStreams = fs.createReadStream(videoPath, { start, end })
   videoStreams.pipe(res)
+}
+
+export const serveM3u8Controller = async (req: Request, res: Response) => {
+  const { id } = req.params
+
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, 'master.m3u8'), (err) => {
+    if (err) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        message: USERS_MESSAGES.VIDEO_NOT_FOUND
+      })
+    }
+  })
+}
+
+export const serveSegmentController = async (req: Request, res: Response) => {
+  const { id, v, segment } = req.params
+
+  return res.sendFile(path.resolve(UPLOAD_VIDEO_DIR, id, v, segment), (err) => {
+    if (err) {
+      return res.status(HTTP_STATUS.NOT_FOUND).json({
+        message: USERS_MESSAGES.VIDEO_NOT_FOUND
+      })
+    }
+  })
 }
 
 export const uploadImageController = async (req: Request, res: Response) => {

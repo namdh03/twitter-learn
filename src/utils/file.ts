@@ -52,7 +52,7 @@ export const handleUploadVideo = async (req: Request) => {
   const formidable = (await import('formidable')).default
   const nanoid = (await import('nanoid')).nanoid
   const idName = nanoid()
-  const folderPath = path.resolve(UPLOAD_VIDEO_TEMP_DIR, idName)
+  const folderPath = path.resolve(UPLOAD_VIDEO_DIR, idName)
 
   fs.mkdirSync(folderPath)
 
