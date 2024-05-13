@@ -12,7 +12,7 @@ import staticRouter from './routes/static.routes'
 const app = express()
 const port = process.env.PORT || 4000
 
-databaseService.connect()
+databaseService.connect().then(() => databaseService.indexUsers())
 
 // Tạo folder uploads nếu chưa tồn tại
 initFolder()
