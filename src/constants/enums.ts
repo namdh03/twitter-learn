@@ -23,3 +23,15 @@ export enum EncodingStatus {
   Success,
   Failed
 }
+
+export enum TweetTypeField {
+  Tweet,
+  Retweet,
+  Comment,
+  QuoteTweet
+}
+
+export enum TweetAudience {
+  Everyone,
+  TwitterCircle
+}
