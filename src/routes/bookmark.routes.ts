@@ -1,5 +1,5 @@
 import { Router } from 'express'
-import { bookmarkController } from '~/controllers/bookmarks.controller'
+import { bookmarkController, unBookmarkController } from '~/controllers/bookmarks.controller'
 import { accessTokenValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -17,5 +17,20 @@ const bookmarksRouter = Router()
  * }
  */
 bookmarksRouter.post('/', accessTokenValidator, verifiedUserValidator, wrapRequestHandler(bookmarkController))
+
+/**
+ * Description. Un Bookmark a tweet
+ * Path: /tweets/:tweet_id
+ * Method: DELETE
+ * Headers: {
+ *    Authorization: Bearer {access_token}
+ * }
+ */
+bookmarksRouter.delete(
+  '/tweets/:tweet_id',
+  accessTokenValidator,
+  verifiedUserValidator,
+  wrapRequestHandler(unBookmarkController)
+)
 
 export default bookmarksRouter

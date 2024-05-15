@@ -82,5 +82,6 @@ export const TWEETS_MESSAGES = {
 } as const
 
 export const BOOKMARKS_MESSAGES = {
-  TWEET_HAS_BEEN_BOOKMARKED: 'Tweet has been bookmarked'
+  TWEET_HAS_BEEN_BOOKMARKED: 'Tweet has been bookmarked',
+  TWEET_HAS_BEEN_UNBOOKMARKED: 'Tweet has been unbookmarked'
 } as const
