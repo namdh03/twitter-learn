@@ -80,3 +80,7 @@ export const TWEETS_MESSAGES = {
   MEDIA_MUST_BE_AN_ARRAY_OF_MEDIA: 'Media must be an array of media',
   TWEET_CREATED: 'Tweet created'
 } as const
+
+export const BOOKMARKS_MESSAGES = {
+  TWEET_HAS_BEEN_BOOKMARKED: 'Tweet has been bookmarked'
+} as const

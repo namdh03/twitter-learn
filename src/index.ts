@@ -9,6 +9,7 @@ import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
 import staticRouter from './routes/static.routes'
 import tweetsRouter from './routes/tweets.routes'
+import bookmarksRouter from './routes/bookmark.routes'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -28,6 +29,7 @@ app.use(cors())
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
+app.use('/bookmarks', bookmarksRouter)
 app.use('/static', staticRouter)
 app.use(defaultErrorHandler)
 

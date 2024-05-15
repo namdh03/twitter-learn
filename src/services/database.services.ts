@@ -1,4 +1,5 @@
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
+import Bookmark from '~/models/schemas/Bookmark.schema'
 import Follower from '~/models/schemas/Follower.schema'
 import HashTag from '~/models/schemas/HashTag.schema'
 import RefreshToken from '~/models/schemas/RefreshToke.schema'
@@ -93,6 +94,10 @@ class DatabaseService {
 
   get hashTags(): Collection<HashTag> {
     return this.db.collection(process.env.DB_COLLECTION_HASHTAGS as string)
+  }
+
+  get bookmarks(): Collection<Bookmark> {
+    return this.db.collection(process.env.DB_COLLECTION_BOOKMARKS as string)
   }
 }
 
