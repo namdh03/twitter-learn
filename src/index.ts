@@ -10,6 +10,7 @@ import { initFolder } from './utils/file'
 import staticsRouter from './routes/statics.routes'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
+import likesRouter from './routes/likes.routes'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -30,6 +31,7 @@ app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
+app.use('/likes', likesRouter)
 app.use('/static', staticsRouter)
 app.use(defaultErrorHandler)
 
