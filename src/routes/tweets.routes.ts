@@ -1,7 +1,7 @@
 import { Router } from 'express'
 import { createTweetController, getTweetController } from '~/controllers/tweets.controller'
-import { createTweetValidator, tweetIdValidator } from '~/middlewares/tweets.middlewares'
-import { accessTokenValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
+import { audienceValidator, createTweetValidator, tweetIdValidator } from '~/middlewares/tweets.middlewares'
+import { accessTokenValidator, isUserLoggedInValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
 const tweetsRouter = Router()
@@ -28,6 +28,13 @@ tweetsRouter.post(
  * Path: /:tweet_id
  * Method: GET
  */
-tweetsRouter.get('/:tweet_id', tweetIdValidator, wrapRequestHandler(getTweetController))
+tweetsRouter.get(
+  '/:tweet_id',
+  isUserLoggedInValidator(accessTokenValidator),
+  isUserLoggedInValidator(verifiedUserValidator),
+  tweetIdValidator,
+  wrapRequestHandler(audienceValidator),
+  wrapRequestHandler(getTweetController)
+)
 
 export default tweetsRouter

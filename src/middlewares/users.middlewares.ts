@@ -1,4 +1,4 @@
-import { NextFunction, Request, Response } from 'express'
+import { NextFunction, Request, RequestHandler, Response } from 'express'
 import { ParamSchema, checkSchema } from 'express-validator'
 import { JsonWebTokenError } from 'jsonwebtoken'
 import { capitalize } from 'lodash'
@@ -445,7 +445,7 @@ export const resetPasswordValidator = validate(
 export const verifiedUserValidator = async (req: Request, res: Response, next: NextFunction) => {
   const { verify } = req.decode_authorization as TokenPayload
 
-  if (verify !== UserVerifyStatus.Verified) {
+  if (verify === UserVerifyStatus.Unverified) {
     return next(new ErrorWithStatus({ status: HTTP_STATUS.UNAUTHORIZED, message: USERS_MESSAGES.USER_IS_NOT_VERIFIED }))
   }
 
@@ -590,3 +590,13 @@ export const changePasswordValidator = validate(
     confirm_password: confirmPasswordSchema
   })
 )
+
+export const isUserLoggedInValidator =
+  <P>(middleware: RequestHandler<P>) =>
+  async (req: Request<P>, res: Response, next: NextFunction) => {
+    if (req.headers.authorization) {
+      return middleware(req, res, next)
+    }
+
+    next()
+  }
