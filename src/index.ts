@@ -7,9 +7,9 @@ import { defaultErrorHandler } from './middlewares/error.middlewares'
 import usersRouter from './routes/users.routes'
 import mediasRouter from './routes/medias.routes'
 import { initFolder } from './utils/file'
-import staticRouter from './routes/static.routes'
+import staticsRouter from './routes/statics.routes'
 import tweetsRouter from './routes/tweets.routes'
-import bookmarksRouter from './routes/bookmark.routes'
+import bookmarksRouter from './routes/bookmarks.routes'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -30,7 +30,7 @@ app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
-app.use('/static', staticRouter)
+app.use('/static', staticsRouter)
 app.use(defaultErrorHandler)
 
 app.listen(port, () => {
