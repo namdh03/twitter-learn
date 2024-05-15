@@ -1,5 +1,6 @@
 import { Router } from 'express'
 import { likeController, unLikeController } from '~/controllers/likes.controller'
+import { tweetIdValidator } from '~/middlewares/tweets.middlewares'
 import { accessTokenValidator, verifiedUserValidator } from '~/middlewares/users.middlewares'
 import { wrapRequestHandler } from '~/utils/handlers'
 
@@ -16,7 +17,7 @@ const likesRouter = Router()
  *    tweet_id: string
  * }
  */
-likesRouter.post('/', accessTokenValidator, verifiedUserValidator, wrapRequestHandler(likeController))
+likesRouter.post('/', accessTokenValidator, verifiedUserValidator, tweetIdValidator, wrapRequestHandler(likeController))
 
 /**
  * Description. Unlike a tweet
@@ -30,6 +31,7 @@ likesRouter.delete(
   '/tweets/:tweet_id',
   accessTokenValidator,
   verifiedUserValidator,
+  tweetIdValidator,
   wrapRequestHandler(unLikeController)
 )
 
