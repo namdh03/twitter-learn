@@ -2,7 +2,7 @@ import Follower from '~/models/schemas/Follower.schema'
 import User from '~/models/schemas/User.schema'
 import databaseService from './database.services'
 import { RegisterReqBody, UpdateMeReqBody } from '~/models/requests/User.requests'
-import hasPassword from '~/utils/crypto'
+import hashPassword from '~/utils/crypto'
 import { signToken, verifyToken } from '~/utils/jwt'
 import { TokenType, UserVerifyStatus } from '~/constants/enums'
 import { ObjectId } from 'mongodb'
@@ -167,7 +167,7 @@ class UsersService {
         username: `user_${user_id.toString()}`,
         email_verify_token,
         date_of_birth: new Date(payload.date_of_birth),
-        password: hasPassword(payload.password),
+        password: hashPassword(payload.password),
         verify
       })
     )
@@ -255,7 +255,7 @@ class UsersService {
         newUser: 0
       }
     } else {
-      const password = hasPassword('user_' + userInfo.id)
+      const password = hashPassword('user_' + userInfo.id)
       const data = await this.register(
         {
           email: userInfo.email,
@@ -427,7 +427,7 @@ class UsersService {
       {
         $set: {
           forgot_password_token: '',
-          password: hasPassword(password)
+          password: hashPassword(password)
         },
         $currentDate: {
           updated_at: true
@@ -557,7 +557,7 @@ class UsersService {
       },
       {
         $set: {
-          password: hasPassword(password)
+          password: hashPassword(password)
         },
         $currentDate: {
           updated_at: true
