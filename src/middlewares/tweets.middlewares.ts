@@ -304,3 +304,42 @@ export const audienceValidator = async (req: Request, res: Response, next: NextF
 
   next()
 }
+
+export const tweetChildrenValidator = validate(
+  checkSchema({
+    tweet_type: {
+      isIn: {
+        options: [tweetTypes],
+        errorMessage: TWEETS_MESSAGES.INVALID_TYPE
+      }
+    },
+    limit: {
+      isNumeric: true,
+      custom: {
+        options: (value, { req }) => {
+          const limit = Number(value)
+
+          if (limit < 1 || limit > 100) {
+            throw new Error(TWEETS_MESSAGES.LIMIT_MUST_BE_A_NUMBER_BETWEEN_1_AND_100)
+          }
+
+          return true
+        }
+      }
+    },
+    page: {
+      isNumeric: true,
+      custom: {
+        options: (value, { req }) => {
+          const page = Number(value)
+
+          if (page < 1) {
+            throw new Error(TWEETS_MESSAGES.PAGE_MUST_BE_A_NUMBER_GREATER_THAN_0)
+          }
+
+          return true
+        }
+      }
+    }
+  })
+)
