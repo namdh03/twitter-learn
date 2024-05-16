@@ -126,143 +126,146 @@ export const createTweetValidator = validate(
 )
 
 export const tweetIdValidator = validate(
-  checkSchema({
-    tweet_id: {
-      custom: {
-        options: async (value, { req }) => {
-          if (!ObjectId.isValid(value)) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.BAD_REQUEST,
-              message: TWEETS_MESSAGES.TWEET_ID_INVALID
-            })
-          }
+  checkSchema(
+    {
+      tweet_id: {
+        custom: {
+          options: async (value, { req }) => {
+            if (!ObjectId.isValid(value)) {
+              throw new ErrorWithStatus({
+                status: HTTP_STATUS.BAD_REQUEST,
+                message: TWEETS_MESSAGES.TWEET_ID_INVALID
+              })
+            }
 
-          const [tweet] = await databaseService.tweets
-            .aggregate<Tweet>([
-              {
-                $match: {
-                  _id: new ObjectId(String(value))
-                }
-              },
-              {
-                $lookup: {
-                  from: 'hashtags',
-                  localField: 'hashtags',
-                  foreignField: '_id',
-                  as: 'hashtags'
-                }
-              },
-              {
-                $lookup: {
-                  from: 'users',
-                  localField: 'mentions',
-                  foreignField: '_id',
-                  as: 'mentions'
-                }
-              },
-              {
-                $lookup: {
-                  from: 'bookmarks',
-                  localField: '_id',
-                  foreignField: 'tweet_id',
-                  as: 'bookmarks'
-                }
-              },
-              {
-                $lookup: {
-                  from: 'likes',
-                  localField: '_id',
-                  foreignField: 'tweet_id',
-                  as: 'likes'
-                }
-              },
-              {
-                $lookup: {
-                  from: 'tweets',
-                  localField: '_id',
-                  foreignField: 'parent_id',
-                  as: 'tweet_children'
-                }
-              },
-              {
-                $addFields: {
-                  mentions: {
-                    $map: {
-                      input: '$mentions',
-                      as: 'mention',
-                      in: {
-                        _id: '$$mention._id',
-                        name: '$$mention.name',
-                        username: '$$mention.username',
-                        email: '$$mention.email'
-                      }
-                    }
-                  },
-                  bookmarks: {
-                    $size: '$bookmarks'
-                  },
-                  likes: {
-                    $size: '$likes'
-                  },
-                  retweet_count: {
-                    $size: {
-                      $filter: {
-                        input: '$tweet_children',
-                        as: 'children',
-                        cond: {
-                          $eq: ['$$children.type', TweetTypeField.Retweet]
+            const [tweet] = await databaseService.tweets
+              .aggregate<Tweet>([
+                {
+                  $match: {
+                    _id: new ObjectId(String(value))
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'hashtags',
+                    localField: 'hashtags',
+                    foreignField: '_id',
+                    as: 'hashtags'
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'users',
+                    localField: 'mentions',
+                    foreignField: '_id',
+                    as: 'mentions'
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'bookmarks',
+                    localField: '_id',
+                    foreignField: 'tweet_id',
+                    as: 'bookmarks'
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'likes',
+                    localField: '_id',
+                    foreignField: 'tweet_id',
+                    as: 'likes'
+                  }
+                },
+                {
+                  $lookup: {
+                    from: 'tweets',
+                    localField: '_id',
+                    foreignField: 'parent_id',
+                    as: 'tweet_children'
+                  }
+                },
+                {
+                  $addFields: {
+                    mentions: {
+                      $map: {
+                        input: '$mentions',
+                        as: 'mention',
+                        in: {
+                          _id: '$$mention._id',
+                          name: '$$mention.name',
+                          username: '$$mention.username',
+                          email: '$$mention.email'
                         }
                       }
-                    }
-                  },
-                  comment_count: {
-                    $size: {
-                      $filter: {
-                        input: '$tweet_children',
-                        as: 'children',
-                        cond: {
-                          $eq: ['$$children.type', TweetTypeField.Comment]
+                    },
+                    bookmarks: {
+                      $size: '$bookmarks'
+                    },
+                    likes: {
+                      $size: '$likes'
+                    },
+                    retweet_count: {
+                      $size: {
+                        $filter: {
+                          input: '$tweet_children',
+                          as: 'children',
+                          cond: {
+                            $eq: ['$$children.type', TweetTypeField.Retweet]
+                          }
                         }
                       }
-                    }
-                  },
-                  quote_count: {
-                    $size: {
-                      $filter: {
-                        input: '$tweet_children',
-                        as: 'children',
-                        cond: {
-                          $eq: ['$$children.type', TweetTypeField.QuoteTweet]
+                    },
+                    comment_count: {
+                      $size: {
+                        $filter: {
+                          input: '$tweet_children',
+                          as: 'children',
+                          cond: {
+                            $eq: ['$$children.type', TweetTypeField.Comment]
+                          }
                         }
                       }
+                    },
+                    quote_count: {
+                      $size: {
+                        $filter: {
+                          input: '$tweet_children',
+                          as: 'children',
+                          cond: {
+                            $eq: ['$$children.type', TweetTypeField.QuoteTweet]
+                          }
+                        }
+                      }
+                    },
+                    view: {
+                      $add: ['$user_views', '$guest_views']
                     }
-                  },
-                  view: {
-                    $add: ['$user_views', '$guest_views']
+                  }
+                },
+                {
+                  $project: {
+                    tweet_children: 0
                   }
                 }
-              },
-              {
-                $project: {
-                  tweet_children: 0
-                }
-              }
-            ])
-            .toArray()
+              ])
+              .toArray()
 
-          if (!tweet) {
-            throw new ErrorWithStatus({
-              status: HTTP_STATUS.NOT_FOUND,
-              message: TWEETS_MESSAGES.TWEET_NOT_FOUND
-            })
+            if (!tweet) {
+              throw new ErrorWithStatus({
+                status: HTTP_STATUS.NOT_FOUND,
+                message: TWEETS_MESSAGES.TWEET_NOT_FOUND
+              })
+            }
+
+            ;(req as Request).tweet = tweet
+            return true
           }
-
-          ;(req as Request).tweet = tweet
-          return true
         }
       }
-    }
-  })
+    },
+    ['params']
+  )
 )
 
 export const audienceValidator = async (req: Request, res: Response, next: NextFunction) => {
@@ -306,40 +309,51 @@ export const audienceValidator = async (req: Request, res: Response, next: NextF
 }
 
 export const tweetChildrenValidator = validate(
-  checkSchema({
-    tweet_type: {
-      isIn: {
-        options: [tweetTypes],
-        errorMessage: TWEETS_MESSAGES.INVALID_TYPE
-      }
-    },
-    limit: {
-      isNumeric: true,
-      custom: {
-        options: (value, { req }) => {
-          const limit = Number(value)
-
-          if (limit < 1 || limit > 100) {
-            throw new Error(TWEETS_MESSAGES.LIMIT_MUST_BE_A_NUMBER_BETWEEN_1_AND_100)
-          }
-
-          return true
+  checkSchema(
+    {
+      tweet_type: {
+        isIn: {
+          options: [tweetTypes],
+          errorMessage: TWEETS_MESSAGES.INVALID_TYPE
         }
       }
     },
-    page: {
-      isNumeric: true,
-      custom: {
-        options: (value, { req }) => {
-          const page = Number(value)
+    ['query']
+  )
+)
 
-          if (page < 1) {
-            throw new Error(TWEETS_MESSAGES.PAGE_MUST_BE_A_NUMBER_GREATER_THAN_0)
+export const paginationValidator = validate(
+  checkSchema(
+    {
+      limit: {
+        isNumeric: true,
+        custom: {
+          options: (value, { req }) => {
+            const limit = Number(value)
+
+            if (limit < 1 || limit > 100) {
+              throw new Error(TWEETS_MESSAGES.LIMIT_MUST_BE_A_NUMBER_BETWEEN_1_AND_100)
+            }
+
+            return true
           }
+        }
+      },
+      page: {
+        isNumeric: true,
+        custom: {
+          options: (value, { req }) => {
+            const page = Number(value)
 
-          return true
+            if (page < 1) {
+              throw new Error(TWEETS_MESSAGES.PAGE_MUST_BE_A_NUMBER_GREATER_THAN_0)
+            }
+
+            return true
+          }
         }
       }
-    }
-  })
+    },
+    ['query']
+  )
 )

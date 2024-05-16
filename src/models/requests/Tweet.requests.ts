@@ -12,10 +12,13 @@ export interface TweetReqBody {
   medias: Media[]
 }
 
-export interface TweetChildrenReqQuery {
-  tweet_type: TweetTypeField
+export interface Pagination {
   limit: number
   page: number
+}
+
+export interface TweetChildrenReqQuery extends Pagination {
+  tweet_type: TweetTypeField
 }
 
 export interface TweetChildrenReqParams extends ParamsDictionary {
