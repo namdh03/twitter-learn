@@ -11,6 +11,7 @@ import staticsRouter from './routes/statics.routes'
 import tweetsRouter from './routes/tweets.routes'
 import bookmarksRouter from './routes/bookmarks.routes'
 import likesRouter from './routes/likes.routes'
+import searchRouter from './routes/search.routes'
 
 const app = express()
 const port = process.env.PORT || 4000
@@ -20,6 +21,7 @@ databaseService.connect().then(() => {
   databaseService.indexRefreshTokens()
   databaseService.indexVideoStatus()
   databaseService.indexFollowers()
+  databaseService.indexTweets()
 })
 
 // Tạo folder uploads nếu chưa tồn tại
@@ -32,6 +34,7 @@ app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
 app.use('/bookmarks', bookmarksRouter)
 app.use('/likes', likesRouter)
+app.use('/search', searchRouter)
 app.use('/static', staticsRouter)
 app.use(defaultErrorHandler)
 

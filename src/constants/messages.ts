@@ -97,3 +97,9 @@ export const LIKES_MESSAGES = {
   LIKED_SUCCESSFULLY: 'Liked successfully',
   UNLIKED_SUCCESSFULLY: 'Unliked successfully'
 } as const
+
+export const SEARCH_MESSAGES = {
+  CONTENT_MUST_BE_A_STRING: 'Content must be a string',
+  INVALID_MEDIA_TYPE: 'Invalid media type',
+  PEOPLE_FOLLOW_MUST_BE_A_BOOLEAN: 'People follow must be a boolean'
+}
