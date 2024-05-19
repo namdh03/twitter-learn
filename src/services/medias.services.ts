@@ -118,7 +118,7 @@ class MediasService {
         await sharp(file.filepath).jpeg().toFile(newPath)
 
         const s3Result = await uploadFileToS3({
-          filename: newName,
+          filename: 'images/' + newName,
           filePath: newPath,
           contentType: mime.getType(newPath) as string
         })
