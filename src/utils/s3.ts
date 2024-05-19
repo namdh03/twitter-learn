@@ -1,6 +1,9 @@
 import { S3 } from '@aws-sdk/client-s3'
 import { Upload } from '@aws-sdk/lib-storage'
+import { Response } from 'express'
 import fs from 'fs'
+import HTTP_STATUS from '~/constants/httpStatus'
+import { USERS_MESSAGES } from '~/constants/messages'
 
 const s3 = new S3({
   region: process.env.AWS_REGION,
@@ -22,7 +25,7 @@ export const uploadFileToS3 = ({
   const parallelUploads3 = new Upload({
     client: s3,
     params: {
-      Bucket: 'twitter-learn-ap-southeast-1',
+      Bucket: process.env.S3_BUCKET_NAME as string,
       Key: filename,
       Body: fs.readFileSync(filePath),
       ContentType: contentType
@@ -36,4 +39,18 @@ export const uploadFileToS3 = ({
   })
 
   return parallelUploads3.done()
+}
+
+export const sendFileFromS3 = async (res: Response, filepath: string) => {
+  try {
+    const data = await s3.getObject({
+      Bucket: process.env.S3_BUCKET_NAME as string,
+      Key: filepath
+    })
+    ;(data.Body as any).pipe(res)
+  } catch (error) {
+    return res.status(HTTP_STATUS.NOT_FOUND).json({
+      message: USERS_MESSAGES.VIDEO_NOT_FOUND
+    })
+  }
 }

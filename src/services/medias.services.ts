@@ -1,13 +1,14 @@
 import { Request } from 'express'
 import fs from 'fs'
+import { rimrafSync } from 'rimraf'
 import fsPromise from 'fs/promises'
 import path from 'path'
 import sharp from 'sharp'
 import { isProduction } from '~/constants/configs'
-import { UPLOAD_IMAGE_DIR } from '~/constants/dir'
+import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { EncodingStatus, MediaType } from '~/constants/enums'
 import { Media } from '~/models/Other'
-import { getFileName, handleUploadImage, handleUploadVideo } from '~/utils/file'
+import { getFileName, getFiles, handleUploadImage, handleUploadVideo } from '~/utils/file'
 import { encodeHLSWithMultipleVideoStreams } from '~/utils/video'
 import databaseService from './database.services'
 import VideoStatus from '~/models/schemas/VideoStatus.schema'
@@ -37,6 +38,8 @@ class Queue {
   }
 
   async processEncode() {
+    const mime = (await import('mime')).default
+
     if (this.encoding) {
       return
     }
@@ -64,6 +67,19 @@ class Queue {
         fs.unlinkSync(videoPath)
         this.items.shift()
 
+        const files = getFiles(path.resolve(UPLOAD_VIDEO_DIR, idName))
+        await Promise.all(
+          files.map(async (file) => {
+            const filename = 'videos-hls' + file.replace(path.resolve(UPLOAD_VIDEO_DIR), '')
+
+            return await uploadFileToS3({
+              filename,
+              filePath: file,
+              contentType: mime.getType(file) as string
+            })
+          })
+        )
+        rimrafSync(path.resolve(UPLOAD_VIDEO_DIR, idName))
         await databaseService.videoStatus.updateOne(
           { name: idName },
           {
@@ -180,8 +196,8 @@ class MediasService {
 
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video-hls/${newName}`
-            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}`,
+            ? `${process.env.HOST}/static/video-hls/${newName}/master.m3u8`
+            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}/master.m3u8`,
           type: MediaType.HLS
         }
       })
