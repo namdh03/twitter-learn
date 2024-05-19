@@ -11,6 +11,7 @@ import { USERS_MESSAGES } from '~/constants/messages'
 import { ErrorWithStatus } from '~/models/Errors'
 import HTTP_STATUS from '~/constants/httpStatus'
 import axios from 'axios'
+import { sendVerifyForgotPasswordEmail, sendVerifyRegisterEmail } from '~/utils/email'
 
 class UsersService {
   private async getOauthGoogleToken(code: string) {
@@ -186,7 +187,13 @@ class UsersService {
       })
     )
 
-    console.log('email_verify_token at register', email_verify_token)
+    // Flow verify email
+    // 1. Server send email to user
+    // 2. User click link in email
+    // 3. Client send request to server with email_verify_token
+    // 4. Server verify email_verify_token
+    // 5. Client receive access_token and refresh_token
+    await sendVerifyRegisterEmail(payload.email, email_verify_token)
 
     return {
       accessToken,
@@ -367,7 +374,7 @@ class UsersService {
     }
   }
 
-  async resendEmailVerify(user_id: string) {
+  async resendEmailVerify(user_id: string, email: string) {
     const email_verify_token = await this.signEmailVerifyToken({
       user_id,
       verify: UserVerifyStatus.Unverified
@@ -386,14 +393,14 @@ class UsersService {
       }
     )
 
-    console.log('email_verify_token at resendEmailVerify', email_verify_token)
+    await sendVerifyRegisterEmail(email, email_verify_token)
 
     return {
       message: USERS_MESSAGES.RESEND_EMAIL_VERIFY_SUCCESS
     }
   }
 
-  async forgotPassword({ user_id, verify }: { user_id: string; verify: UserVerifyStatus }) {
+  async forgotPassword({ user_id, verify, email }: { user_id: string; verify: UserVerifyStatus; email: string }) {
     const forgot_password_token = await this.signForgotPasswordToken({
       user_id,
       verify
@@ -412,7 +419,7 @@ class UsersService {
       }
     )
 
-    console.log('forgot_password_token at forgotPassword', forgot_password_token)
+    await sendVerifyForgotPasswordEmail(email, forgot_password_token)
 
     return {
       message: USERS_MESSAGES.CHECK_EMAIL_TO_RESET_PASSWORD

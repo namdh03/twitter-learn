@@ -123,15 +123,15 @@ usersRouter.post('/resend-verify-email', accessTokenValidator, wrapRequestHandle
 usersRouter.post('/forgot-password', forgotPasswordValidator, wrapRequestHandler(forgotPasswordController))
 
 /**
- * Description. Verify forget password when user click on the link in gmail
- * Path: /verify-forget-password
+ * Description. Verify forgot password when user click on the link in gmail
+ * Path: /verify-forgot-password
  * Method: POST
  * Body: {
  *    forgot_password_token: string
  * }
  */
 usersRouter.post(
-  '/verify-forget-password',
+  '/verify-forgot-password',
   verifyForgotPasswordTokenValidator,
   wrapRequestHandler(verifyForgotPasswordController)
 )
