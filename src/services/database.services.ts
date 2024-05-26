@@ -1,5 +1,6 @@
 import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
 import Bookmark from '~/models/schemas/Bookmark.schema'
+import Conversation from '~/models/schemas/Conversation.schema'
 import Follower from '~/models/schemas/Follower.schema'
 import HashTag from '~/models/schemas/HashTag.schema'
 import Like from '~/models/schemas/Like.schema'
@@ -105,6 +106,10 @@ class DatabaseService {
 
   get likes(): Collection<Like> {
     return this.db.collection(process.env.DB_COLLECTION_LIKES as string)
+  }
+
+  get conversations(): Collection<Conversation> {
+    return this.db.collection(process.env.DB_COLLECTION_CONVERSATIONS as string)
   }
 }
 
