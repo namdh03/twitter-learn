@@ -107,3 +107,11 @@ export const SEARCH_MESSAGES = {
   INVALID_MEDIA_TYPE: 'Invalid media type',
   PEOPLE_FOLLOW_MUST_BE_A_BOOLEAN: 'People follow must be a boolean'
 }
+
+export const CONVERSATION_MESSAGES = {
+  SENDER_ID_MUST_BE_A_VALID_USER_ID: 'Sender ID must be a valid user ID',
+  RECEIVER_ID_MUST_BE_A_VALID_USER_ID: 'Receiver ID must be a valid user ID',
+  CONVERSATION_CREATED: 'Conversation created',
+  CONVERSATION_NOT_FOUND: 'Conversation not found',
+  GET_CONVERSATION_SUCCESS: 'Get conversation successful'
+} as const

@@ -15,6 +15,8 @@ import bookmarksRouter from './routes/bookmarks.routes'
 import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
 import Conversation from './models/schemas/Conversation.schema'
+import conversationsRouter from './routes/conversations.routes'
+import { ObjectId } from 'mongodb'
 
 const app = express()
 const httpServer = createServer(app)
@@ -45,8 +47,8 @@ io.on('connection', (socket) => {
     if (receiver_socket_id) {
       await databaseService.conversations.insertOne(
         new Conversation({
-          sender_id: from,
-          receiver_id: to,
+          sender_id: new ObjectId(from as string),
+          receiver_id: new ObjectId(to as string),
           content
         })
       )
@@ -84,6 +86,7 @@ app.use('/bookmarks', bookmarksRouter)
 app.use('/likes', likesRouter)
 app.use('/search', searchRouter)
 app.use('/static', staticsRouter)
+app.use('/conversations', conversationsRouter)
 app.use(defaultErrorHandler)
 
 httpServer.listen(port, () => {
