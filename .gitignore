@@ -1,4 +1,6 @@
 node_modules/
 dist/
 /.env*
+# Allow .env.example to be committed
+!.env.example
 uploads/

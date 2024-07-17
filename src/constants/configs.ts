@@ -1,9 +1,11 @@
 import argv from 'minimist'
-import 'dotenv/config'
+import { config } from 'dotenv'
 
 const options = argv(process.argv.slice(2))
-
-export const isProduction = options.production
+export const isProduction = options.env === 'production'
+config({
+  path: options.env ? `.env.${options.env}` : '.env'
+})
 
 export const envConfig = {
   HOST: process.env.HOST || 'http://localhost',
