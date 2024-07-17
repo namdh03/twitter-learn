@@ -4,7 +4,7 @@ import { rimrafSync } from 'rimraf'
 import fsPromise from 'fs/promises'
 import path from 'path'
 import sharp from 'sharp'
-import { isProduction } from '~/constants/configs'
+import { envConfig, isProduction } from '~/constants/configs'
 import { UPLOAD_IMAGE_DIR, UPLOAD_VIDEO_DIR } from '~/constants/dir'
 import { EncodingStatus, MediaType } from '~/constants/enums'
 import { Media } from '~/models/Other'
@@ -148,8 +148,8 @@ class MediasService {
 
         // return {
         //   url: isProduction
-        //     ? `${process.env.HOST}/static/image/${newName}`
-        //     : `http://localhost:${process.env.PORT}/static/image/${newName}`,
+        //     ? `${envConfig.HOST}/static/image/${newName}`
+        //     : `http://localhost:${envConfig.PORT}/static/image/${newName}`,
         //   type: MediaType.Image
         // }
       })
@@ -177,8 +177,8 @@ class MediasService {
 
         // return {
         //   url: isProduction
-        //     ? `${process.env.HOST}/static/video/${file.newFilename}`
-        //     : `http://localhost:${process.env.PORT}/static/video/${file.newFilename}`,
+        //     ? `${envConfig.HOST}/static/video/${file.newFilename}`
+        //     : `http://localhost:${envConfig.PORT}/static/video/${file.newFilename}`,
         //   type: MediaType.Video
         // }
       })
@@ -196,8 +196,8 @@ class MediasService {
 
         return {
           url: isProduction
-            ? `${process.env.HOST}/static/video-hls/${newName}/master.m3u8`
-            : `http://localhost:${process.env.PORT}/static/video-hls/${newName}/master.m3u8`,
+            ? `${envConfig.HOST}/static/video-hls/${newName}/master.m3u8`
+            : `http://localhost:${envConfig.PORT}/static/video-hls/${newName}/master.m3u8`,
           type: MediaType.HLS
         }
       })

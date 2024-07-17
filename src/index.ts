@@ -1,6 +1,5 @@
 import express from 'express'
 import cors from 'cors'
-import 'dotenv/config'
 import { createServer } from 'http'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
@@ -17,10 +16,11 @@ import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
 import conversationsRouter from './routes/conversations.routes'
 import initSocket from './utils/socket'
+import { envConfig } from './constants/configs'
 
 const app = express()
 const httpServer = createServer(app)
-const port = process.env.PORT || 4000
+const port = envConfig.PORT || 4000
 const options: swaggerJsdoc.Options = {
   definition: {
     openapi: '3.0.0',
