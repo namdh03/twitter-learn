@@ -39,7 +39,7 @@ export const loginController = async (req: Request<ParamsDictionary, any, LoginR
 export const oauthController = async (req: Request, res: Response) => {
   const { code } = req.query
   const result = await usersService.oauth(code as string)
-  const urlRedirect = `${process.env.GOOGLE_CLIENT_REDIRECT_CALLBACK as string}?access_token=${result.accessToken}&refresh_token=${result.refreshToken}&new_user=${result.newUser}`
+  const urlRedirect = `${process.env.GOOGLE_CLIENT_REDIRECT_CALLBACK as string}?accessToken=${result.accessToken}&refreshToken=${result.refreshToken}&newUser=${result.newUser}`
 
   return res.redirect(urlRedirect)
 }
