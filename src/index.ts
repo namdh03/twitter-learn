@@ -3,6 +3,8 @@ import cors from 'cors'
 import { createServer } from 'http'
 import swaggerUi from 'swagger-ui-express'
 import swaggerJsdoc from 'swagger-jsdoc'
+import helmet from 'helmet'
+import { rateLimit } from 'express-rate-limit'
 
 import databaseService from './services/database.services'
 import { defaultErrorHandler } from './middlewares/error.middlewares'
@@ -16,7 +18,7 @@ import likesRouter from './routes/likes.routes'
 import searchRouter from './routes/search.routes'
 import conversationsRouter from './routes/conversations.routes'
 import initSocket from './utils/socket'
-import { envConfig } from './constants/configs'
+import { envConfig, isProduction } from './constants/configs'
 
 const app = express()
 const httpServer = createServer(app)
@@ -47,6 +49,16 @@ const options: swaggerJsdoc.Options = {
   apis: ['./openapi/*.yaml']
 }
 const openapiSpecification = swaggerJsdoc(options)
+const corsOptions: cors.CorsOptions = {
+  origin: isProduction ? envConfig.CLIENT_URL : '*'
+}
+const limiter = rateLimit({
+  windowMs: 15 * 60 * 1000, // 15 minutes
+  limit: 100, // Limit each IP to 100 requests per `window` (here, per 15 minutes).
+  standardHeaders: 'draft-7', // draft-6: `RateLimit-*` headers; draft-7: combined `RateLimit` header
+  legacyHeaders: false // Disable the `X-RateLimit-*` headers.
+  // store: ... , // Redis, Memcached, etc. See below.
+})
 
 databaseService.connect().then(() => {
   databaseService.indexUsers()
@@ -59,8 +71,10 @@ databaseService.connect().then(() => {
 // Tạo folder uploads nếu chưa tồn tại
 initFolder()
 
+app.use(limiter)
+app.use(helmet())
+app.use(cors(corsOptions))
 app.use(express.json())
-app.use(cors())
 app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification))
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
