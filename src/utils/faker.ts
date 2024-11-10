@@ -18,7 +18,7 @@ import Tweet from '~/models/schemas/Tweet.schema'
 // Mật khẩu cho các fake user
 const PASSWORD = 'Password123@'
 // ID của tài khoản của mình, dùng để follow người khác
-const MY_ID = new ObjectId('6647033ed9a5bb81322f8744')
+const MY_ID = new ObjectId('6730847a5ec92be94918b04d')
 
 // Số lượng user được tạo, mỗi user sẽ mặc định tweet 2 cái
 const USER_COUNT = 400

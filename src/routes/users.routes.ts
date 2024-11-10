@@ -16,7 +16,7 @@ import {
   unFollowController,
   updateMeController,
   verifyForgotPasswordController
-} from '~/controllers/users.controllers'
+} from '~/controllers/users.controller'
 import { filterMiddleware } from '~/middlewares/common.middlewares'
 import {
   accessTokenValidator,
@@ -46,38 +46,6 @@ const usersRouter = Router()
  *    email: string,
  *    password: string
  * }
- */
-/**
- * @swagger
- * /users/login:
- *   post:
- *     tags:
- *       - users
- *     summary: Logs user into the system
- *     description: A user can log into the system by providing a username and password
- *     operationId: login
- *     requestBody:
- *       description: The user credentials
- *       required: true
- *       content:
- *         application/json:
- *           schema:
- *             $ref: '#/components/schemas/LoginBody'
- *     responses:
- *       '200':
- *         description: Successful operation
- *         content:
- *           application/json:
- *             schema:
- *               type: object
- *               properties:
- *                 message:
- *                   type: string
- *                   example: Login successful
- *                 data:
- *                   $ref: '#/components/schemas/SuccessAuthentication'
- *       '422':
- *         description: Validation exception
  */
 usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 

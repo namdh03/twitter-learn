@@ -1,4 +1,4 @@
-import { Collection, Db, MongoClient, ServerApiVersion } from 'mongodb'
+import { Collection, Db, MongoClient } from 'mongodb'
 import { envConfig } from '~/constants/configs'
 import Bookmark from '~/models/schemas/Bookmark.schema'
 import Conversation from '~/models/schemas/Conversation.schema'
@@ -9,6 +9,7 @@ import RefreshToken from '~/models/schemas/RefreshToke.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import User from '~/models/schemas/User.schema'
 import VideoStatus from '~/models/schemas/VideoStatus.schema'
+import fakeData from '~/utils/faker'
 
 const uri = `mongodb+srv://${envConfig.DB_USERNAME}:${envConfig.DB_PASSWORD}@twitter-singapore.mycwwx9.mongodb.net/?retryWrites=true&w=majority&appName=twitter-singapore`
 
@@ -29,6 +30,8 @@ class DatabaseService {
       // Send a ping to confirm a successful connection
       await this.db.command({ ping: 1 })
       console.log('Pinged your deployment. You successfully connected to MongoDB!')
+      // Fake data
+      // await fakeData()
     } catch (error) {
       console.error(error)
     }

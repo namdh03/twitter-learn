@@ -1,8 +1,6 @@
 import express from 'express'
 import cors from 'cors'
 import { createServer } from 'http'
-import swaggerUi from 'swagger-ui-express'
-import swaggerJsdoc from 'swagger-jsdoc'
 import helmet from 'helmet'
 import { rateLimit } from 'express-rate-limit'
 
@@ -23,32 +21,6 @@ import { envConfig, isProduction } from './constants/configs'
 const app = express()
 const httpServer = createServer(app)
 const port = envConfig.PORT || 4000
-const options: swaggerJsdoc.Options = {
-  definition: {
-    openapi: '3.0.0',
-    info: {
-      title: 'X clone (Twitter API)',
-      version: '1.0.0'
-    },
-    components: {
-      securitySchemes: {
-        BearerAuth: {
-          type: 'http',
-          scheme: 'bearer',
-          bearerFormat: 'JWT'
-        }
-      }
-    },
-    security: [
-      {
-        BearerAuth: []
-      }
-    ],
-    persistAuthorization: true
-  },
-  apis: ['./openapi/*.yaml']
-}
-const openapiSpecification = swaggerJsdoc(options)
 const corsOptions: cors.CorsOptions = {
   origin: isProduction ? envConfig.CLIENT_URL : '*'
 }
@@ -75,7 +47,6 @@ app.use(limiter)
 app.use(helmet())
 app.use(cors(corsOptions))
 app.use(express.json())
-app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(openapiSpecification))
 app.use('/users', usersRouter)
 app.use('/medias', mediasRouter)
 app.use('/tweets', tweetsRouter)
