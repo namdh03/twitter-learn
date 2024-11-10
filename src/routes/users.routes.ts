@@ -47,6 +47,38 @@ const usersRouter = Router()
  *    password: string
  * }
  */
+/**
+ * @swagger
+ * /users/login:
+ *   post:
+ *     tags:
+ *       - users
+ *     summary: Login summary
+ *     description: Login description
+ *     operationId: login
+ *     requestBody:
+ *       description: Login request body description
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             $ref: '#/components/schemas/LoginBody'
+ *     responses:
+ *       '200':
+ *         description: Successful operation
+ *         content:
+ *           application/json:
+ *             schema:
+ *               type: object
+ *               properties:
+ *                 message:
+ *                   type: string
+ *                   example: Login successful
+ *                 data:
+ *                   $ref: '#/components/schemas/SuccessAuthentication'
+ *       '422':
+ *         description: Validation exception
+ */
 usersRouter.post('/login', loginValidator, wrapRequestHandler(loginController))
 
 /**

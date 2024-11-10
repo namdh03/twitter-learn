@@ -1,0 +1,175 @@
+openapi: 3.0.3
+info:
+  title: Twitter Clone API - OpenAPI 3.0
+  description: |-
+    Welcome to the Twitter Clone API, built on OpenAPI 3.0 specifications! This API provides core functionalities for a Twitter-like social media platform, where users can post tweets, follow other users, like and retweet content, and much more.
+
+    **API Highlights:**
+    - **User Management**: Register, log in, and manage user profiles.
+    - **Tweets and Timelines**: Create, view, and interact with tweets, including features like replies, retweets, and likes.
+    - **Social Features**: Follow/unfollow other users, view timelines, and receive notifications for key activities.
+    - **Real-time Updates**: Get instant updates with support for notifications and live feeds.
+
+    **Helpful Links:**
+    - [Platform Repository](https://github.com/your-organization/twitter-clone)
+    - [API Definition](https://github.com/your-organization/twitter-clone/blob/main/api-definition.yaml)
+
+    Explore and contribute to this Twitter clone project as we aim to provide a rich, interactive social media experience!
+
+  termsOfService: http://yourtwitterclone.com/terms/
+  contact:
+    email: support@yourtwitterclone.com
+  license:
+    name: Apache 2.0
+    url: http://www.apache.org/licenses/LICENSE-2.0.html
+  version: 1.0.0
+externalDocs:
+  description: Learn more about the Twitter Clone Project
+  url: http://yourtwitterclone.com
+servers:
+  - url: http://localhost:4000
+  - url: https://api.yourtwitterclone.com/v1
+tags:
+  - name: users
+    description: Operations related to user accounts and profiles
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Login summary
+      description: Login description
+      operationId: login
+      requestBody:
+        description: Login request body description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+        '422':
+          description: Validation exception
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Get me summary
+      description: Get me description
+      operationId: getMe
+      responses:
+        default:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get me successful
+                  data:
+                    $ref: '#/components/schemas/UserInfoResponse'
+      security:
+        - BearerAuth: []
+components:
+  schemas:
+    LoginBody:
+      type: object
+      properties:
+        email:
+          type: string
+          example: namdh03.dev@gmail.com
+        password:
+          type: string
+          example: Password123@
+    SuccessAuthentication:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjczMDg0N2E1ZWM5MmJlOTQ5MThiMDRkIiwidG9rZW5fdHlwZSI6MCwidmVyaWZ5IjoxLCJpYXQiOjE3MzEyNDYxNTksImV4cCI6MTczMTI0NzA1OX0.yLTr1Ov8yKd5v0RQWzXHgn9aILomQ55jFCVBCNNhn78
+        refreshToken:
+          type: string
+          example: eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VyX2lkIjoiNjczMDg0N2E1ZWM5MmJlOTQ5MThiMDRkIiwidG9rZW5fdHlwZSI6MSwidmVyaWZ5IjoxLCJpYXQiOjE3MzEyNDYxNTksImV4cCI6MTczOTg4NjE1OX0.AjGUtQmbE17zpwTeezyLCSQol5V6zZ-B-cplJMLK8hQ
+    UserInfoResponse:
+      type: object
+      properties:
+        message:
+          type: string
+          example: Get user info successful
+        data:
+          type: object
+          properties:
+            _id:
+              type: string
+              format: MongoId
+              example: 6730847a5ec92be94918b04d
+            name:
+              type: string
+              example: Dương Hoàng Nam
+            email:
+              type: string
+              example: namdh03.dev@gmail.com
+            date_of_birth:
+              type: string
+              format: date-time
+              example: 2023-06-06T08:26:33.781Z
+            created_at:
+              type: string
+              format: date-time
+              example: 2024-11-10T10:01:30.667Z
+            updated_at:
+              type: string
+              format: date-time
+              example: 2024-11-10T10:05:28.008Z
+            verify:
+              $ref: '#/components/schemas/UserVerifyStatus'
+            tweet_circle:
+              type: array
+              items:
+                type: string
+                format: MongoId
+              example: ['673086a5697c7df9b481c018']
+            bio:
+              type: string
+              example: ''
+            location:
+              type: string
+              example: ''
+            website:
+              type: string
+              example: https://github.com/namdh03
+            username:
+              type: string
+              example: user_6730847a5ec92be94918b04d
+            avatar:
+              type: string
+              example: ''
+            cover_photo:
+              type: string
+              example: ''
+    UserVerifyStatus:
+      type: integer
+      enum:
+        - Unverified
+        - Verified
+        - Banned
+      example: 0
+  securitySchemes:
+    BearerAuth:
+      type: http
+      scheme: bearer
+      bearerFormat: JWT
