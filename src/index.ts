@@ -97,7 +97,7 @@ Explore and contribute to this Twitter clone project as we aim to provide a rich
       }
     }
   },
-  apis: ['./src/routes/*.routes.ts', './src/models/requests/*.requests.ts']
+  apis: ['./openapi/**/*.yaml']
 }
 
 const openapiSpecification = swaggerJsdoc(options)

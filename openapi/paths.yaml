@@ -1,0 +1,52 @@
+paths:
+  /users/login:
+    post:
+      tags:
+        - users
+      summary: Login summary
+      description: Login description
+      operationId: login
+      requestBody:
+        description: Login request body description
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginBody'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Login successful
+                  data:
+                    $ref: '#/components/schemas/SuccessAuthentication'
+        '422':
+          description: Validation exception
+  /users/me:
+    get:
+      tags:
+        - users
+      summary: Get me summary
+      description: Get me description
+      operationId: getMe
+      responses:
+        default:
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  message:
+                    type: string
+                    example: Get me successful
+                  data:
+                    $ref: '#/components/schemas/UserInfoResponse'
+      security:
+        - BearerAuth: []
