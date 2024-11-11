@@ -9,9 +9,9 @@ import RefreshToken from '~/models/schemas/RefreshToke.schema'
 import Tweet from '~/models/schemas/Tweet.schema'
 import User from '~/models/schemas/User.schema'
 import VideoStatus from '~/models/schemas/VideoStatus.schema'
-import fakeData from '~/utils/faker'
 
-const uri = `mongodb+srv://${envConfig.DB_USERNAME}:${envConfig.DB_PASSWORD}@twitter-singapore.mycwwx9.mongodb.net/?retryWrites=true&w=majority&appName=twitter-singapore`
+// const uri = `mongodb+srv://${envConfig.DB_USERNAME}:${envConfig.DB_PASSWORD}@${envConfig.HOST}/?retryWrites=true&w=majority&appName=twitter-singapore`
+const uri = `mongodb://${envConfig.DB_USERNAME}:${envConfig.DB_PASSWORD}@${envConfig.HOST}/?retryWrites=true&w=majority&appName=twitter-singapore`
 
 class DatabaseService {
   private client: MongoClient
