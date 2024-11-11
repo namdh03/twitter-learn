@@ -93,6 +93,7 @@ usersRouter.get('/oauth/google', wrapRequestHandler(oauthController))
  * Path: /register
  * Method: POST
  * Body: {
+ *    name: string,
  *    email: string,
  *    password: string
  *    confirm_password: string
